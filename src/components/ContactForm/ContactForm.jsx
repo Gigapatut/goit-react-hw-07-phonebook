@@ -1,17 +1,22 @@
 import css from './ContactForm.module.css';
-import { useDispatch } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/operations';
+import { selectNameContacts } from 'redux/selectors';
 
   export default function ContactForm() {
 
     const dispatch = useDispatch();
+    const contactsName = useSelector(selectNameContacts);
 
     const handleSubmit = evt => {
       evt.preventDefault();
       const form = evt.target;
       const name = form.elements.name.value;
-      const number = form.elements.number.value;
-      dispatch(addContact(name, number));
+      const phone = form.elements.phone.value;
+
+      contactsName.includes(name)
+      ? alert(`${name} is already in contacts`)
+      : dispatch(addContact({ name, phone }));
       form.reset();
     };
     
@@ -32,7 +37,7 @@ import { addContact } from 'redux/contactsSlice';
         Number
         <input
           type="tel"
-          name="number"
+          name="phone"
           required
         />
       </label>

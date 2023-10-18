@@ -1,35 +1,38 @@
 import { useSelector } from 'react-redux';
 import css from './ContactList.module.css';
-// import { nanoid } from 'nanoid';
+
 import { useDispatch } from 'react-redux';
-import { delContact } from 'redux/contactsSlice';
+import { deleteContact } from 'redux/operations';
+import { selectFilteredContacts } from 'redux/selectors';
 
 const ContactList = () => {
-  const contacts = useSelector(state => state.data.contacts);
-  const filter = useSelector(state => state.sorting.filter);
-
-  const filteredContacts = () => {
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  };  
+  
+  const filteredContacts = useSelector(selectFilteredContacts); 
   const dispatch = useDispatch();
   
   return (
     <ul>
-      {filteredContacts().length > 0 && (
-        filteredContacts().map(({ id, name, number }) => (
-          <li className={css.contact} key={id}>
-            {name}: {number}
-            <button className={css.delete} onClick={() => {
-              dispatch(delContact({ id }));
-              }}>
+      {filteredContacts.length > 0 &&
+        filteredContacts.map(({ id, name, phone }) => (
+          <li
+            className={css.contact}
+            key={id}
+            id={id}
+            name={name}
+            phone={phone}
+          >
+            {name}: {phone}
+            <button
+              className={css.delete}
+              onClick={() => {
+                dispatch(deleteContact(id));
+              }}
+            >
               Delete
             </button>
           </li>
-        ))
-      )}
-    </ul >
+        ))}
+    </ul>
   );
 };
 
